@@ -37,7 +37,7 @@ app.get('/login', (req, res) => {
 app.get('/', (req, res) => {
 
 	// go to index
-	res.render('index', {blaat: 'blaat'}); 
+	res.render('index', {blaat: 'blaatjes'}); 
 
 	//strava.athlete.listActivities({id:11835180, per_page:10, gear_id:"b5377602"},function(err,payload,limits) {
 	// strava.athlete.listActivities({id:11835180, gear_id:"b5377602"},function(err,payload,limits) {
