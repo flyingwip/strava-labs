@@ -3,6 +3,7 @@ const app = express()
 const port = 3000
 const strava = require('strava-v3');
 var _ = require('lodash');
+var step = require('everpolate').step
 
 var engines = require('consolidate');
 app.engine('hbs', engines.handlebars);
@@ -45,6 +46,14 @@ function formatToDutchDate(dateString){
 
   	return day + ' ' + monthNames[monthIndex] + ' ' + year ;
   	//return dateString;
+
+}
+
+function formatToUnixTimestamp(dateString){
+
+	let date = new Date(dateString);
+
+  	return Math.round((date).getTime() / 1000);
 
 }  
 
@@ -117,6 +126,11 @@ app.get('/', (req, res) => {
 		let below_limit = _.filter(arr_average_watts, belowLimit).length;
 		let above_limit = _.filter(arr_average_watts, aboveLimit).length;
 
+		let unix_training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToUnixTimestamp);
+
+		// step(x {Array|Number}, X {Array}, Y {Array}) → {Array}
+		let next = step(1, unix_training_dates, arr_average_watts);
+
 		//console.log('arr_average_watts', arr_average_watts);
 		res.render('index', {results: arr_average_watts,
 			amount_training_sessions : wattworks_activities.length, 
@@ -125,7 +139,8 @@ app.get('/', (req, res) => {
 			max : max,
 			min : min,
 			below_limit: below_limit,
-			above_limit, above_limit
+			above_limit, above_limit,
+			next : next
 		});  
 
 	    //res.send(training_dates.toString());

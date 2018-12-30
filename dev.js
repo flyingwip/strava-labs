@@ -31,6 +31,14 @@ function formatToDutchDate(dateString){
 
 }
 
+function formatToUnixTimestamp(dateString){
+
+	let date = new Date(dateString);
+
+  	return Math.round((date).getTime() / 1000);
+
+}
+
 var activities = JSON.parse(fs.readFileSync('activities.json', 'utf8'));
 
 //let wattworks_activities = _.filter(activities, { 'gear_id': 'b5377602',});
@@ -70,6 +78,12 @@ let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToD
 //training_dates = _.map(training_dates, formatToDutchDate);	
 console.log(training_dates);
 
+
+console.log('------------------');
+
+let unix_training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToUnixTimestamp);
+//training_dates = _.map(training_dates, formatToDutchDate);	
+console.log(unix_training_dates);
 
 
 //console.log('max', average_watts);
