@@ -5,6 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.16.4",
+    "lodash": "^4.17.11",
     "strava-v3": "^1.14.0"
   },
   "devDependencies": {

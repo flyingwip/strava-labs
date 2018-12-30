@@ -4,7 +4,7 @@ const port = 3000
 const strava = require('strava-v3');
 
 
-// payin with the config
+// playing with the config
 app.get('/config', (req, res) => {
 
 	res.send(strava);
@@ -29,31 +29,40 @@ app.get('/login', (req, res) => {
 // request with the code
 app.get('/', (req, res) => {
 
-	//strava.athlete.listActivities({id:11835180, per_page:10, gear_id:"b5377602"},function(err,payload,limits) {
-	strava.athlete.listActivities({id:11835180, gear_id:"b5377602"},function(err,payload,limits) {
+	//strava.athlete.listActivities({id:11835180, per_page:10, gear_id:"b5377602"},function(err,payload,limits
+	//strava.athlete.listActivities({id:11835180},function(err,payload,limits) {
+	strava.athlete.listActivities({},function(err,payload,limits) {
 	    //do something with your payload, track rate limits
 	    res.send(payload);
 	});		
 
 })
 
-// strava.athletes.get({id:11835180},function(err,payload,limits) {
-//     //do something with your payload, track rate limits
-//     console.log(payload);
-// });
 
+// request with the code
+app.get('/average', (req, res) => {
 
+	// get last 30 activities and calculate averege
+	
+	//strava.athlete.listActivities({id:11835180, per_page:10, gear_id:"b5377602"},function(err,payload,limits
+	strava.athlete.listActivities({id:11835180},function(err,payload,limits) {
+	    //do something with your payload, track rate limits
+	    res.send(payload);
+	});		
 
-//strava.oauth.getToken(code,function(err,payload,limits) {
+})
 
-// now get activities
-// strava.athlete.listActivities({id:11835180},function(err,payload,limits) {
-//     //do something with your payload, track rate limits
-//     res.send(payload);
-// });		
+//
 
-//res.send(payload);
-//});
+//request gears
+app.get('/zones', (req, res) => {
+
+	strava.athlete.listZones({id:11835180},function(err,payload,limits) {
+	    //do something with your payload, track rate limits
+	    res.send(payload);
+	});		
+	
+})
 
 
 
