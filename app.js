@@ -43,7 +43,8 @@ function formatToDutchDate(dateString){
   	var monthIndex = date.getMonth();
   	var year = date.getFullYear();
 
-  	return day + ' ' + monthNames[monthIndex] + ' ' + year;
+  	return day + ' ' + monthNames[monthIndex] + ' ' + year ;
+  	//return dateString;
 
 }  
 
@@ -83,7 +84,7 @@ app.get('/chart', (req, res) => {
 	
 	let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToDutchDate);	
 
-	res.send(training_dates); 
+	//res.send(training_dates); 
 	//res.render('index', {results: wattworks_activities, dates: training_dates}); 
 	//res.render('index', {blaat: 'blaatjes'}); 
 
@@ -94,20 +95,40 @@ app.get('/chart', (req, res) => {
 app.get('/', (req, res) => {
 
 	// go to index
-	//res.render('index', {blaat: 'blaatjes'}); 
-
 	
-	strava.athlete.listActivities({},function(err,payload,limits) {
+	strava.athlete.listActivities({per_page:30},function(err,payload,limits) {
 	    //do something with your payload, track rate limits
-	    let activities = payload;
+	    let activities = payload.reverse();
 
 	    let wattworks_activities = _.filter(activities, filterWattworks);
 
 		let arr_average_watts  = _.map(wattworks_activities, 'average_watts'); // [12, 14, 16, 18]
 		arr_average_watts = _.map(arr_average_watts, round);
-		//console.log('arr_average_watts', arr_average_watts); 
+		
+		let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToDutchDate);	
 
-	    res.send(arr_average_watts);
+		let average = Math.round(_.meanBy(wattworks_activities, (p) => p.average_watts));
+
+		//let max = Math.max(arr_average_watts);
+		let max = Math.max.apply(Math, arr_average_watts);
+		let min = Math.min.apply(Math, arr_average_watts);
+
+		// 
+		let below_limit = _.filter(arr_average_watts, belowLimit).length;
+		let above_limit = _.filter(arr_average_watts, aboveLimit).length;
+
+		//console.log('arr_average_watts', arr_average_watts);
+		res.render('index', {results: arr_average_watts,
+			amount_training_sessions : wattworks_activities.length, 
+			dates: training_dates,
+			average:average,
+			max : max,
+			min : min,
+			below_limit: below_limit,
+			above_limit, above_limit
+		});  
+
+	    //res.send(training_dates.toString());
 	});		
 
 })

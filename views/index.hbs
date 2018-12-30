@@ -17,19 +17,31 @@
 </head>
 <body>
 
-  <h1>My Strava Statistics</h1>
-<div class="chart-container" style="position: relative; height:40vh; width:80vw">
+  <h3>WattWorks Training Curve</h3>
+<ul>  
+<li>Aantal trainingen : {{amount_training_sessions}}</li>
+<li>Gemiddels wattage : {{average}}</li>
+<li>Hoogste waarde : {{max}}</li>
+<li>Laagste waarde : {{min}}</li>
+<li>Aantal maal < 200 : {{below_limit}}</li>
+<li>Aantal maal > 200 : {{above_limit}}</li>
+</ul>
+<hr>
+<div class="chart-container" style="position: relative; height:30vh; width:55vw">
   <canvas id="myChart" ></canvas>
-</div>  
+</div>
+
 <script>
 var ctx = document.getElementById("myChart").getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        labels: [{{#each dates}}
+                  '{{this}}',
+                  {{/each}}],
         datasets: [{
             label: '# of {{blaat}}',
-            data: [12, 19, 3, 5, 2, 3],
+            data: [{{ results }}],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
