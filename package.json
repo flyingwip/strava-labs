@@ -7,6 +7,7 @@
     "consolidate": "^0.15.1",
     "express": "^4.16.4",
     "handlebars": "^4.0.12",
+    "lodash": "^4.17.11",
     "strava-v3": "^1.14.0"
   },
   "devDependencies": {
