@@ -4,7 +4,9 @@
   "description": "a strava api experiment ",
   "main": "app.js",
   "dependencies": {
+    "consolidate": "^0.15.1",
     "express": "^4.16.4",
+    "handlebars": "^4.0.12",
     "strava-v3": "^1.14.0"
   },
   "devDependencies": {
