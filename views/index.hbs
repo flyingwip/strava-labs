@@ -1,81 +1,153 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>User Index</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js" integrity="sha256-o8aByMEvaNTcBsw94EfRLbBrJBI+c3mjna/j4LrfyJ8=" crossorigin="anonymous"></script>
-  <style>
-    * {
-      font-family: Helvetica, Arial, sans-serif;
-    }
+   <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js" integrity="sha256-o8aByMEvaNTcBsw94EfRLbBrJBI+c3mjna/j4LrfyJ8=" crossorigin="anonymous"></script>
+      <style>
+         body {
+         }
 
-    canvas{
-      display : none;
-    }
-
-  </style>
-</head>
-<body>
-
-  <h3>WattWorks Training Curve 🚴</h3>
-<ul>  
-<li>Aantal trainingen : {{amount_training_sessions}}</li>
-<li>Gemiddels wattage : {{average}}</li>
-<li>Hoogste waarde : {{max}} 🔥</li>
-<li>Laagste waarde : {{min}} 🐌</li>
-<li>Aantal < 200  : {{below_limit}}</li>
-<li>Aantal > 200 : {{above_limit}}</li>
-</ul>
-<hr>
-Dus volgende keer trap je <strong>{{next}} WATT</strong> met je k*t!  🚴 😀
-<hr>
-<div class="chart-container" style="position: relative; height:30vh; width:55vw">
-  <canvas id="myChart" ></canvas>
-</div>
-
-<script>
-var ctx = document.getElementById("myChart").getContext('2d');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: [{{#each dates}}
-                  '{{this}}',
-                  {{/each}}],
-        datasets: [{
-            label: '# of {{blaat}}',
-            data: [{{ results }}],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:false
-                }
-            }]
-        }
-    }
-});
-</script>
-
-  
-
-</body>
+         h1{
+          text-align: center;
+         }
+         canvas{
+         display : none;
+         }    
+      </style>
+      <title>TRAINALYTICS</title>
+   </head>
+   <body>
+      <div class="container">
+      <div class="row">
+         <div class="col-12">
+          <h1>TRAIN-ALYTICS</h1>
+          <hr>
+         </div> 
+       </div>   
+      <div class="row">
+         <div class="col-4">
+            <ul class="list-group">
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                Aantal trainingen
+                  <span class="badge badge-primary badge-pill">
+                  {{amount_training_sessions}}
+                  </span>
+               </li>
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Gemiddeld Watt.
+                  <span class="badge badge-primary badge-pill">
+                    {{average}} 
+                  </span>
+               </li>
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Gem Watt. SpeedWorks
+                  <span class="badge badge-primary badge-pill">
+                    {{average_sp_works}} 
+                  </span>
+               </li>               
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Gem Watt. BlockWorks
+                  <span class="badge badge-primary badge-pill">
+                    {{average_bl_works}} 
+                  </span>
+               </li> 
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Gem Watt. PowerWorks
+                  <span class="badge badge-primary badge-pill">
+                    {{average_pw_works}} 
+                  </span>
+               </li>                                                           
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Gem Watt. ClimbWorks
+                  <span class="badge badge-primary badge-pill">
+                    {{average_cl_works}} 
+                  </span>
+               </li>                                                                          
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Hoogste waarde 🔥
+                  <span class="badge badge-primary badge-pill">
+                  {{max}} 
+                  </span>
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Laagste waarde 🐌
+                  <span class="badge badge-primary badge-pill">
+                  {{min}} 
+                  </span>
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Aantal < 200 
+                  <span class="badge badge-primary badge-pill">
+                  {{below_limit}} 
+                  </span>                                     
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Aantal < 200 
+                  <span class="badge badge-primary badge-pill">
+                  {{below_limit}} 
+                  </span>                                                       
+               </li>
+               <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Watt. per kilogram ({{body_weight}}kg) 
+                  <span class="badge badge-primary badge-pill">
+                  {{pw_body_weight}} 
+                  </span>                                                       
+               </li>
+    
+            </ul>
+         </div>
+         <div class="col-8">
+            <div class="chart-container" style="position: relative; height:30vh; width:100%">
+               <canvas id="myChart" ></canvas>
+            </div>
+         </div>
+      </div>
+      <!-- Optional JavaScript -->
+      <script>
+         var ctx = document.getElementById("myChart").getContext('2d');
+         var myChart = new Chart(ctx, {
+             type: 'line',
+             data: {
+                 labels: [{{#each dates}}
+                           '{{this}}',
+                           {{/each}}],
+                 datasets: [{
+                     label: '# of {{blaat}}',
+                     data: [{{ results }}],
+                     backgroundColor: [
+                         'rgba(255, 99, 132, 0.2)',
+                         'rgba(54, 162, 235, 0.2)',
+                         'rgba(255, 206, 86, 0.2)',
+                         'rgba(75, 192, 192, 0.2)',
+                         'rgba(153, 102, 255, 0.2)',
+                         'rgba(255, 159, 64, 0.2)'
+                     ],
+                     borderColor: [
+                         'rgba(255,99,132,1)',
+                         'rgba(54, 162, 235, 1)',
+                         'rgba(255, 206, 86, 1)',
+                         'rgba(75, 192, 192, 1)',
+                         'rgba(153, 102, 255, 1)',
+                         'rgba(255, 159, 64, 1)'
+                     ],
+                     borderWidth: 1
+                 }]
+             },
+             options: {
+                 scales: {
+                     yAxes: [{
+                         ticks: {
+                             beginAtZero:false
+                         }
+                     }]
+                 }
+             }
+         });
+      </script>
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+   </body>
 </html>

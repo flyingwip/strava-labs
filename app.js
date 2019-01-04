@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+
 const port = 3000
 const strava = require('strava-v3');
 var _ = require('lodash');
@@ -26,8 +27,14 @@ function aboveLimit(item){
 	return item >= 200;
 }
 
-function filterWattworks(item){
-	return item.name.indexOf("Technogym")>-1;	
+// function filterWattworks(item){
+// 	return item.name.indexOf("Technogym")>-1;	
+// }
+
+function filterWattworks(filter){
+	return function doFilter(item){
+		return item.name.indexOf(filter)>-1;	
+	}	
 }
 
 function formatToDutchDate(dateString){
@@ -105,18 +112,27 @@ app.get('/', (req, res) => {
 
 	// go to index
 	
-	strava.athlete.listActivities({per_page:30},function(err,payload,limits) {
+	strava.athlete.listActivities({per_page:90},function(err,payload,limits) {
 	    //do something with your payload, track rate limits
 	    let activities = payload.reverse();
 
-	    let wattworks_activities = _.filter(activities, filterWattworks);
+	    let wattworks_activities = _.filter(activities, filterWattworks('Technogym'));
+	    let speedworks_activities = _.filter(wattworks_activities, filterWattworks('SpeedWorks'));
+	    let climbworks_activities = _.filter(wattworks_activities, filterWattworks('ClimbWorks'));
+	    let blockworks_activities = _.filter(wattworks_activities, filterWattworks('BlockWorks'));
+	    let powerworks_activities = _.filter(wattworks_activities, filterWattworks('PowerWorks'));
 
-		let arr_average_watts  = _.map(wattworks_activities, 'average_watts'); // [12, 14, 16, 18]
+
+		let arr_average_watts  = _.map(wattworks_activities, 'average_watts'); 
 		arr_average_watts = _.map(arr_average_watts, round);
 		
 		let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToDutchDate);	
 
 		let average = Math.round(_.meanBy(wattworks_activities, (p) => p.average_watts));
+		let average_sp_works = Math.round(_.meanBy(speedworks_activities, (p) => p.average_watts));
+		let average_cl_works = Math.round(_.meanBy(climbworks_activities, (p) => p.average_watts));
+		let average_bl_works = Math.round(_.meanBy(blockworks_activities, (p) => p.average_watts));
+		let average_pw_works = Math.round(_.meanBy(powerworks_activities, (p) => p.average_watts));
 
 		//let max = Math.max(arr_average_watts);
 		let max = Math.max.apply(Math, arr_average_watts);
@@ -131,6 +147,9 @@ app.get('/', (req, res) => {
 		// step(x {Array|Number}, X {Array}, Y {Array}) → {Array}
 		let next = step(1, unix_training_dates, arr_average_watts);
 
+		let body_weight = 70;
+		let pw_body_weight = Math.round(average/body_weight);
+
 		//console.log('arr_average_watts', arr_average_watts);
 		res.render('index', {results: arr_average_watts,
 			amount_training_sessions : wattworks_activities.length, 
@@ -140,7 +159,12 @@ app.get('/', (req, res) => {
 			min : min,
 			below_limit: below_limit,
 			above_limit, above_limit,
-			next : next
+			next : next,
+			average_sp_works: average_sp_works,
+			average_pw_works: average_pw_works,
+			average_bl_works : average_bl_works,
+			average_cl_works : average_cl_works,
+			pw_body_weight : pw_body_weight
 		});  
 
 	    //res.send(training_dates.toString());
