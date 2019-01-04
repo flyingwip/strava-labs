@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+var helpers = require('./helpers')
+
 const port = 3000
 const strava = require('strava-v3');
 var _ = require('lodash');
@@ -12,61 +14,7 @@ app.engine('hbs', engines.handlebars);
 app.set('views', './views');
 app.set('view engine', 'hbs');
 
-
-//-------------- helper functions 
-
-function round(item) {
-  return Math.round(item);
-}
-
-function belowLimit(item){
-	return item < 200;
-}
-
-function aboveLimit(item){
-	return item >= 200;
-}
-
-// function filterWattworks(item){
-// 	return item.name.indexOf("Technogym")>-1;	
-// }
-
-function filterWattworks(filter){
-	return function doFilter(item){
-		return item.name.indexOf(filter)>-1;	
-	}	
-}
-
-function formatToDutchDate(dateString){
-
-	let date = new Date(dateString);
-	var monthNames = [
-	    "jan", "feb", "mar",
-	    "apr", "mei", "jun", "jul",
-	    "aug", "sep", "okt",
-	    "nov", "dec"
-	  ];
-
-	var day = date.getDate();
-  	var monthIndex = date.getMonth();
-  	var year = date.getFullYear();
-
-  	return day + ' ' + monthNames[monthIndex] + ' ' + year ;
-  	//return dateString;
-
-}
-
-function formatToUnixTimestamp(dateString){
-
-	let date = new Date(dateString);
-
-  	return Math.round((date).getTime() / 1000);
-
-}  
-
-
-
-// --------------------------------------
+app.use('/static', express.static('static'));
 
 
 // playing with the config
@@ -98,7 +46,7 @@ app.get('/chart', (req, res) => {
 	// make the call to get the redirect url
 	let wattworks_activities = [207,210,203,167,188,209,198,119,215,204,210,181,205,176,177,205,203,198,139,202,213,190,199,201,220];
 	
-	let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToDutchDate);	
+	let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), helpers.formatToDutchDate);	
 
 	//res.send(training_dates); 
 	//res.render('index', {results: wattworks_activities, dates: training_dates}); 
@@ -116,17 +64,17 @@ app.get('/', (req, res) => {
 	    //do something with your payload, track rate limits
 	    let activities = payload.reverse();
 
-	    let wattworks_activities = _.filter(activities, filterWattworks('Technogym'));
-	    let speedworks_activities = _.filter(wattworks_activities, filterWattworks('SpeedWorks'));
-	    let climbworks_activities = _.filter(wattworks_activities, filterWattworks('ClimbWorks'));
-	    let blockworks_activities = _.filter(wattworks_activities, filterWattworks('BlockWorks'));
-	    let powerworks_activities = _.filter(wattworks_activities, filterWattworks('PowerWorks'));
+	    let wattworks_activities = _.filter(activities, helpers.filterWattworks('Technogym'));
+	    let speedworks_activities = _.filter(wattworks_activities, helpers.filterWattworks('SpeedWorks'));
+	    let climbworks_activities = _.filter(wattworks_activities, helpers.filterWattworks('ClimbWorks'));
+	    let blockworks_activities = _.filter(wattworks_activities, helpers.filterWattworks('BlockWorks'));
+	    let powerworks_activities = _.filter(wattworks_activities, helpers.filterWattworks('PowerWorks'));
 
 
 		let arr_average_watts  = _.map(wattworks_activities, 'average_watts'); 
-		arr_average_watts = _.map(arr_average_watts, round);
+		arr_average_watts = _.map(arr_average_watts, Math.round);
 		
-		let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToDutchDate);	
+		let training_dates  = _.map(_.map(wattworks_activities, 'start_date'), helpers.formatToDutchDate);	
 
 		let average = Math.round(_.meanBy(wattworks_activities, (p) => p.average_watts));
 		let average_sp_works = Math.round(_.meanBy(speedworks_activities, (p) => p.average_watts));
@@ -139,10 +87,10 @@ app.get('/', (req, res) => {
 		let min = Math.min.apply(Math, arr_average_watts);
 
 		// 
-		let below_limit = _.filter(arr_average_watts, belowLimit).length;
-		let above_limit = _.filter(arr_average_watts, aboveLimit).length;
+		let below_limit = _.filter(arr_average_watts, helpers.belowLimit).length;
+		let above_limit = _.filter(arr_average_watts, helpers.aboveLimit).length;
 
-		let unix_training_dates  = _.map(_.map(wattworks_activities, 'start_date'), formatToUnixTimestamp);
+		let unix_training_dates  = _.map(_.map(wattworks_activities, 'start_date'), helpers.formatToUnixTimestamp);
 
 		// step(x {Array|Number}, X {Array}, Y {Array}) → {Array}
 		let next = step(1, unix_training_dates, arr_average_watts);
@@ -150,6 +98,10 @@ app.get('/', (req, res) => {
 		let body_weight = 70;
 		let pw_body_weight = Math.round(average/body_weight);
 
+		let last = wattworks_activities.slice(Math.max(wattworks_activities.length - 5, 1));
+
+		let average_last_works = Math.round(_.meanBy(last, (p) => p.average_watts));
+		
 		//console.log('arr_average_watts', arr_average_watts);
 		res.render('index', {results: arr_average_watts,
 			amount_training_sessions : wattworks_activities.length, 
@@ -164,7 +116,8 @@ app.get('/', (req, res) => {
 			average_pw_works: average_pw_works,
 			average_bl_works : average_bl_works,
 			average_cl_works : average_cl_works,
-			pw_body_weight : pw_body_weight
+			pw_body_weight : pw_body_weight,
+			average_last_works : average_last_works
 		});  
 
 	    //res.send(training_dates.toString());

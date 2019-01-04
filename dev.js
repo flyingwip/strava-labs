@@ -1,6 +1,8 @@
 var fs = require('fs');
 var _ = require('lodash');
 
+var helpers = require('./helpers')
+
 function round(item) {
   return Math.round(item);
 }
@@ -59,7 +61,7 @@ console.log('max', max.average_watts);
 console.log('min', min.average_watts);
 
 let values  = _.map(wattworks_activities, 'average_watts');
-values = _.map(values, round);
+values = _.map(values, Math.round);
 console.log('values', values); 
 
 // count all values below 200 
@@ -85,6 +87,11 @@ let unix_training_dates  = _.map(_.map(wattworks_activities, 'start_date'), form
 //training_dates = _.map(training_dates, formatToDutchDate);	
 console.log(unix_training_dates);
 
+
+let last = wattworks_activities.slice(Math.max(wattworks_activities.length - 5, 1));
+
+let average_last_works = Math.round(_.meanBy(last, (p) => p.average_watts));
+console.log(average_last_works);
 
 //console.log('max', average_watts);
 

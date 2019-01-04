@@ -7,94 +7,113 @@
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.bundle.js" integrity="sha256-o8aByMEvaNTcBsw94EfRLbBrJBI+c3mjna/j4LrfyJ8=" crossorigin="anonymous"></script>
-      <style>
-         body {
-         }
-
-         h1{
-          text-align: center;
-         }
-         canvas{
-         display : none;
-         }    
-      </style>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+      <!-- Custom CSS -->
+      <link rel="stylesheet" type="text/css" href="/static/style.css"/>
       <title>TRAINALYTICS</title>
    </head>
    <body>
       <div class="container">
       <div class="row">
          <div class="col-12">
-          <h1>TRAIN-ALYTICS</h1>
-          <hr>
-         </div> 
-       </div>   
+            <h1>TRAIN-ALYTICS</h1>
+            <hr>
+         </div>
+      </div>
       <div class="row">
-         <div class="col-4">
-            <ul class="list-group">
-               <li class="list-group-item d-flex justify-content-between align-items-center">
-                Aantal trainingen
-                  <span class="badge badge-primary badge-pill">
-                  {{amount_training_sessions}}
-                  </span>
-               </li>
-               <li class="list-group-item d-flex justify-content-between align-items-center">
-                  Gemiddeld Watt.
-                  <span class="badge badge-primary badge-pill">
-                    {{average}} 
-                  </span>
-               </li>
-               <li class="list-group-item d-flex justify-content-between align-items-center">
+         <div class="col-3">
+            <div class="card text-white bg-primary mb-3" >
+               <div class="card-header"><i class="fas fa-archive"></i> AANTAL TRAININGEN</div>
+               <div class="card-body">
+                  <h5 class="card-title">{{amount_training_sessions}}</h5>
+                  <p class="card-text"></p>
+               </div>
+            </div>
+            <hr>
+         </div>
+         <div class="col-3">
+            <div class="card text-white bg-secondary mb-3" >
+               <div class="card-header"><i class="fab fa-superpowers"></i> HOOGSTE WATTAGE</div>
+               <div class="card-body">
+                  <h5 class="card-title"> {{max}}</h5>
+               </div>
+            </div>
+            <hr>
+         </div>
+         <div class="col-3">
+            <div class="card text-white bg-info mb-3" >
+               <div class="card-header"><i class="fas fa-bolt"></i> GEMIDDELD WATTAGE</div>
+               <div class="card-body">
+                  <h5 class="card-title">{{average}}</h5>
+               </div>
+            </div>
+            <hr>
+         </div>
+
+         <div class="col-3">
+            <div class="card text-white bg-primary mb-3" >
+               <div class="card-header"><i class="fas fa-archive"></i> GEM. LST 5X</div>
+               <div class="card-body">
+                  <h5 class="card-title">{{average_last_works}}</h5>
+                  <p class="card-text"></p>
+               </div>
+            </div>
+            <hr>
+         </div>
+
+
+      </div>
+      <div class="row">
+         <div class="col-4 ">
+            <ul class="list-group bg-primary">
+               
+               <li class="list-group-item d-flex justify-content-between align-items-center ">
                   Gem Watt. SpeedWorks
-                  <span class="badge badge-primary badge-pill">
-                    {{average_sp_works}} 
+                  <span class="badge badge-light badge-pill">
+                  {{average_sp_works}} 
                   </span>
-               </li>               
+               </li>
                <li class="list-group-item d-flex justify-content-between align-items-center">
                   Gem Watt. BlockWorks
-                  <span class="badge badge-primary badge-pill">
-                    {{average_bl_works}} 
+                  <span class="badge badge-light badge-pill">
+                  {{average_bl_works}} 
                   </span>
-               </li> 
+               </li>
                <li class="list-group-item d-flex justify-content-between align-items-center">
                   Gem Watt. PowerWorks
-                  <span class="badge badge-primary badge-pill">
-                    {{average_pw_works}} 
+                  <span class="badge badge-light badge-pill">
+                  {{average_pw_works}} 
                   </span>
-               </li>                                                           
+               </li>
                <li class="list-group-item d-flex justify-content-between align-items-center">
                   Gem Watt. ClimbWorks
-                  <span class="badge badge-primary badge-pill">
-                    {{average_cl_works}} 
+                  <span class="badge badge-light badge-pill">
+                  {{average_cl_works}} 
                   </span>
-               </li>                                                                          
-               <li class="list-group-item d-flex justify-content-between align-items-center">
-                  Hoogste waarde 🔥
-                  <span class="badge badge-primary badge-pill">
-                  {{max}} 
-                  </span>
-               <li class="list-group-item d-flex justify-content-between align-items-center">
+               </li>
+               {{!-- <li class="list-group-item d-flex justify-content-between align-items-center">
                   Laagste waarde 🐌
-                  <span class="badge badge-primary badge-pill">
+                  <span class="badge badge-warning badge-pill">
                   {{min}} 
                   </span>
+                </li> --}}  
                <li class="list-group-item d-flex justify-content-between align-items-center">
                   Aantal < 200 
-                  <span class="badge badge-primary badge-pill">
+                  <span class="badge badge-light badge-pill">
                   {{below_limit}} 
                   </span>                                     
                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  Aantal < 200 
-                  <span class="badge badge-primary badge-pill">
-                  {{below_limit}} 
+                  Aantal > 200 
+                  <span class="badge badge-light badge-pill">
+                  {{above_limit}} 
                   </span>                                                       
                </li>
                <li class="list-group-item d-flex justify-content-between align-items-center">
                   Watt. per kilogram ({{body_weight}}kg) 
-                  <span class="badge badge-primary badge-pill">
+                  <span class="badge badge-light badge-pill">
                   {{pw_body_weight}} 
                   </span>                                                       
                </li>
-    
             </ul>
          </div>
          <div class="col-8">
@@ -103,6 +122,14 @@
             </div>
          </div>
       </div>
+      <hr>
+      <div class="row">
+         <div class="col-12">
+            <h3>AFGELOPEN MAAND</h3>
+            <hr>
+         </div>
+      </div>
+
       <!-- Optional JavaScript -->
       <script>
          var ctx = document.getElementById("myChart").getContext('2d');
