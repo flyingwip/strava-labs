@@ -46,7 +46,12 @@ function formatToUnixTimestamp(dateString){
 
   	return Math.round((date).getTime() / 1000);
 
-}  
+} 
+
+function fileWritten(data){
+
+	return data;
+} 
 
 exports.round = round
 exports.belowLimit = belowLimit

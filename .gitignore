@@ -1,2 +1,7 @@
 node_modules
 data/strava_config
+athlete.json
+activities.json
+activities_wouter.json
+activities_martijn.json
+strava_authorize_response.json

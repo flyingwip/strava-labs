@@ -1,11 +1,13 @@
 const express = require('express')
 const app = express()
+const fs = require('fs');
 
 var helpers = require('./helpers')
 
 const port = 3000
 const strava = require('strava-v3');
 var _ = require('lodash');
+
 var step = require('everpolate').step
 
 var engines = require('consolidate');
@@ -31,17 +33,57 @@ app.get('/test', (req, res) => {
 });
 
 
-// login
-app.get('/login', (req, res) => {
+// user has to authorize the app first.
+// user has to login to strava first
+// 
+app.get('/authorize', (req, res) => {
 
 	// make the call to get the redirect url
-	const url = strava.oauth.getRequestAccessURL({scope:"view_private,write"}) ;
+	//const url = strava.oauth.getRequestAccessURL({scope:"view_private,write"}) ;
+	const url = strava.oauth.getRequestAccessURL({scope:"activity:read"}) ;
 	res.redirect(url)
+
+});
+
+/*
+* The application must complete the authentication process by exchanging the 
+* authorization code for a refresh token and short-lived access token.
+*/
+app.get('/', (req, res) => {
+
+	//res.send(req.query.code);	
+	strava.oauth.getToken(req.query.code,function(err,payload,limits) {
+	    	
+ 		var obj = {table: []};
+
+		obj.table.push(payload);	
+
+		var json = JSON.stringify(obj);
+
+		fs.writeFile('athlete.json', json, 'utf8');
+
+ 		res.send(payload);
+	    	// make the request to the athlete activities
+
+	  //   	strava.athlete.get({'access_token':payload.access_token},function(err,payload,limits) {
+   // 				 //do something with your payload, track rate limits
+
+   // 				 res.send(payload);
+
+			// });
+
+
+	});	
+
+	
 
 });
 
 
 app.get('/chart', (req, res) => {
+
+
+
 
 	// make the call to get the redirect url
 	let wattworks_activities = [207,210,203,167,188,209,198,119,215,204,210,181,205,176,177,205,203,198,139,202,213,190,199,201,220];
@@ -56,13 +98,19 @@ app.get('/chart', (req, res) => {
 
 
 // request with the code
-app.get('/', (req, res) => {
+app.get('/analytics', (req, res) => {
+
+	//res.send(req.query.code);	
+	// strava.oauth.getToken(req.query.code,function(err,payload,limits) {
+ //    	res.send(payload);
+	// });		
+
 
 	// go to index
-	
 	strava.athlete.listActivities({per_page:90},function(err,payload,limits) {
-	    //do something with your payload, track rate limits
-	    let activities = payload.reverse();
+
+		// res.send(payload);
+		let activities = payload.reverse();
 
 	    let wattworks_activities = _.filter(activities, helpers.filterWattworks('Technogym'));
 	    let speedworks_activities = _.filter(wattworks_activities, helpers.filterWattworks('SpeedWorks'));
@@ -119,8 +167,6 @@ app.get('/', (req, res) => {
 			pw_body_weight : pw_body_weight,
 			average_last_works : average_last_works
 		});  
-
-	    //res.send(training_dates.toString());
 	});		
 
 })
@@ -139,17 +185,27 @@ app.get('/average', (req, res) => {
 
 })
 
+
+// request with the code
+app.get('/wouter', (req, res) => {
+
+	strava.athletes.get({id:5003529},function(err,payload,limits) {
+    	//do something with your payload, track rate limits
+    	res.send(payload);
+	});
+	
+	// //strava.athlete.listActivities({id:11835180, per_page:10, gear_id:"b5377602"},function(err,payload,limits
+	// strava.athlete.listActivities({id:11835180},function(err,payload,limits) {
+	//     //do something with your payload, track rate limits
+	//     res.send(payload);
+	// });		
+
+})
+
 //
 
-//request gears
-app.get('/zones', (req, res) => {
 
-	strava.athlete.listZones({id:11835180},function(err,payload,limits) {
-	    //do something with your payload, track rate limits
-	    res.send(payload);
-	});		
-	
-})
+
 
 
 

@@ -1,3 +1,5 @@
+console.log('hallo');
+
 var fs = require('fs');
 var _ = require('lodash');
 
@@ -41,7 +43,7 @@ function formatToUnixTimestamp(dateString){
 
 }
 
-var activities = JSON.parse(fs.readFileSync('activities.json', 'utf8'));
+var activities = JSON.parse(fs.readFileSync('activities_wouter.json', 'utf8'));
 
 //let wattworks_activities = _.filter(activities, { 'gear_id': 'b5377602',});
 let wattworks_activities = _.filter(activities, function(item){
@@ -102,19 +104,35 @@ console.log(average_last_works);
 //console.log(average_watts);
 
 
-// filter array by gear_id : b5377602
-//let wattworks_activities = _.filter(activities, { 'gear_id': 'b5377602',});
-//console.log(wattworks_activities.length );
+// // filter array by gear_id : b5377602
+// //let wattworks_activities = _.filter(activities, { 'gear_id': 'b5377602',});
+// //console.log(wattworks_activities.length );
 
-// filter by 'technogym in name'
-
-
-//average_watts = _.meanBy(activities_wouter, (p) => p.average_watts);
+// // filter by 'technogym in name'
 
 
-//curl -G https://www.strava.com/api/v3/athletes/532918/activities -H "Authorization: Bearer 6ace8809648b3892966506b0e90553809f666ea8"
+// //average_watts = _.meanBy(activities_wouter, (p) => p.average_watts);
 
-//curl -G https://www.strava.com/api/v3/athletes/11835180/activities -H "Authorization: Bearer 6ace8809648b3892966506b0e90553809f666ea8"
-//curl -G https://www.strava.com/api/v3/athlete/11835180/gears -H "Authorization: Bearer 6ace8809648b3892966506b0e90553809f666ea8"
+// curl -G https://www.strava.com/api/v3/athletes/5003529/activities -H "Authorization: Bearer 7784a38269883f521b0761bc48035b86d481248f"
+// curl -G https://www.strava.com/api/v3/athletes/11835180/activities -H "Authorization: Bearer 6ace8809648b3892966506b0e90553809f666ea8"
+
+// //curl -G https://www.strava.com/api/v3/athlete/11835180/gears -H "Authorization: Bearer 6ace8809648b3892966506b0e90553809f666ea8"
+
+// https://www.strava.com/oauth/authorize?client_id=8713&response_type=code&redirect_uri=http://localhost:3000/token_exchange&approval_prompt=force
+
+//curl -G https://www.strava.com/api/v3/athlete \
+  //   -H "Authorization: Bearer 39976de57c9f339e8d06fd9a1b59ca11795c4037"
+
+ // curl -X GET "https://www.strava.com/api/v3/athletes/5003529?access_token=39976de57c9f339e8d06fd9a1b59ca11795c4037" -H "accept: application/json"
+
+ // https://www.strava.com/api/v3/athlete 'Authorization: Bearer 39976de57c9f339e8d06fd9a1b59ca11795c4037'
+
+ // https://www.strava.com/oauth/authorize?client_id=8713&response_type=code&redirect_uri=http://localhost:3000/token_exchange&approval_prompt=force
+
+
+// To get a new access token
+
+curl -d "client_id=8713&secret=041e2e1dff3cd853599a1c03dccbe24aaf694ce3&grant_type=refresh_token&refresh_token=36e5df3414682d7fff6bf8a9943a2312198b5ff8" -X POST https://www.strava.com/oauth/token
+
 
 
